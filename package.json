@@ -1,0 +1,26 @@
+{
+  "name": "peer-party",
+  "version": "1.0.0",
+  "description": "Create or join a music party and enjoy the streaming in sync",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1995navinkumar/peer-party.git"
+  },
+  "keywords": [
+    "peer",
+    "party",
+    "webrtc",
+    "audio",
+    "streaming"
+  ],
+  "author": "navinkumar.c harish.v",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/1995navinkumar/peer-party/issues"
+  },
+  "homepage": "https://github.com/1995navinkumar/peer-party#readme"
+}
