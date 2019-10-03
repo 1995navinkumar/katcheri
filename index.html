@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./index.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <button id="create">Create Party</button>
+    <button id="join">Join Party</button>
+    <button id="answer">Answer</button>
+    <button id="getSlaveCandidate">Get Slave</button>
+    <button id="getMasterCandidate">Get Master</button>
+    <button id="stream">Stream</button>
+    <audio id="audio"></audio>
+    <script>
+        var audioButton = document.getElementById("audio");
+
+        var createButton = document.getElementById("create");
+        createButton.addEventListener("click",function(){
+            createParty();
+        });
+
+        var joinButton = document.getElementById("join");
+        joinButton.addEventListener("click",function(){
+            joinParty();
+        });
+
+        var answerButton = document.getElementById("answer");
+        answerButton.addEventListener("click",function(){
+            answer();
+        });
+
+        var slaveCandidateButton = document.getElementById("getSlaveCandidate");
+        slaveCandidateButton.addEventListener("click",function(){
+            addSlaveCandidateToMaster();
+        });
+        
+        var masterCandidateButton = document.getElementById("getMasterCandidate");
+        masterCandidateButton.addEventListener("click",function(){
+            addMasterCandidateToSlave();
+        });
+
+        var streamButton = document.getElementById("stream");
+        streamButton.addEventListener("click",stream);
+    </script>
+</body>
+</html>
