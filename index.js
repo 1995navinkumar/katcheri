@@ -50,7 +50,7 @@ function sendMessage() {
 }
 
 function login() {
-    connection = new WebSocket("ws://192.168.0.108:8080");
+    connection = new WebSocket("ws://172.24.120.170:8080");
 
     connection.onopen = () => {
         log("created socket for user");
