@@ -8,43 +8,43 @@
     <title>Document</title>
 </head>
 <body>
-    <button id="create">Create Party</button>
-    <button id="join">Join Party</button>
-    <button id="answer">Answer</button>
+    <style>
+        .chat-mode {
+            display: none;
+        }
+
+        .sent-msg {
+            text-align: right;
+        }
+    </style>
+    
+    <input id="user-name" type="text">
+    <button id="login">login</button>
+    <ul id="peer-list"></ul>
+    <div class="chat-mode">
+        <h2>Start chatting</h2>
+
+        <input id="peer-message" type="text">
+        <button id="send-message">Send message</button>
+    </div>
+
+    <!-- <button id="answer">Answer</button>
     <button id="getSlaveCandidate">Get Slave</button>
     <button id="getMasterCandidate">Get Master</button>
     <button id="stream">Stream</button>
-    <audio id="audio"></audio>
+    <audio id="audio"></audio> -->
     <script>
         var audioButton = document.getElementById("audio");
 
-        var createButton = document.getElementById("create");
-        createButton.addEventListener("click",function(){
-            createParty();
+        var loginButton = document.getElementById("login");
+        loginButton.addEventListener("click",function(){
+            login();
         });
 
-        var joinButton = document.getElementById("join");
-        joinButton.addEventListener("click",function(){
-            joinParty();
+        var sendButton = document.getElementById("send-message");
+        sendButton.addEventListener("click",function(){
+            sendMessage();
         });
-
-        var answerButton = document.getElementById("answer");
-        answerButton.addEventListener("click",function(){
-            answer();
-        });
-
-        var slaveCandidateButton = document.getElementById("getSlaveCandidate");
-        slaveCandidateButton.addEventListener("click",function(){
-            addSlaveCandidateToMaster();
-        });
-        
-        var masterCandidateButton = document.getElementById("getMasterCandidate");
-        masterCandidateButton.addEventListener("click",function(){
-            addMasterCandidateToSlave();
-        });
-
-        var streamButton = document.getElementById("stream");
-        streamButton.addEventListener("click",stream);
     </script>
 </body>
 </html>
