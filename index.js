@@ -1,82 +1,135 @@
 const servers = {
-    urls: "stun:stun.l.google.com:19302"
+    urls: "stun:stun1.l.google.com:19302"
+}
+
+const turnServer = {
+    urls: 'turn:192.158.29.39:3478?transport=udp',
+    credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+    username: '28224511:1379330808'
 }
 
 const iceServers = [servers];
-const signallingServerUrl = "http://localhost:8000";
 
-const createOfferUrl = `${signallingServerUrl}/party/createoffer`;
-const getOfferUrl = `${signallingServerUrl}/party/getoffer`;
-
-const provideAnswerUrl = `${signallingServerUrl}/party/provideanswer`;
-const getAnswerUrl = `${signallingServerUrl}/party/getanswer`;
-
-const createMasterIceCanditateUrl = `${signallingServerUrl}/party/createMasterCandidate`;
-const createSlaveIceCandidateUrl = `${signallingServerUrl}/party/createSlaveCandidate`;
-
-const getMasterIceCandidateUrl = `${signallingServerUrl}/party/getMasterCandidate`;
-const getSlaveIceCandidateUrl = `${signallingServerUrl}/party/getSlaveCandidate`;
-
+const log = console.log;
 
 const constraints = {
     audio: true
 };
 
+var connection;
+var targetIdentifier;
+
+//RTC data channel
+var sendChannel;
+var receiveChannel;
+
 const offerOptions = {
     offerToReceiveAudio: 1,
 };
 
-var masterPeer;
-var slavePeer;
+//Holds client details as name, id
+const client = {};
 
-function sendToServer(url, body) {
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(body)
+
+function sendToServer(msg) {
+    var msgJSON = JSON.stringify(msg);
+
+    console.log("Sending '" + msg.type + "' message: " + msgJSON);
+    connection.send(msgJSON);
+}
+
+//Sends the message through data channel created
+function sendMessage() {
+    let message = document.getElementById("peer-message").value;
+
+    //prints the sent message to the client
+    let outgoingMsg = printMessage(message);
+    outgoingMsg.classList.add('sent-msg');
+
+    sendChannel.send(message);
+}
+
+function login() {
+    connection = new WebSocket("ws://172.24.120.170:8080");
+
+    connection.onopen = () => {
+        log("created socket for user");
+        let userName = document.getElementById('user-name').value;
+        client.name = userName;
+
+        sendToServer({ type: "user-name", name: userName });
+    }
+
+    connection.onmessage = (e) => {
+        var msg = JSON.parse(e.data);
+
+        switch (msg.type) {
+            case "create-id":
+                client.id = msg.id;
+                break;
+
+            case "user-list":
+                updateUserList(msg);
+                break;
+
+            case "offer":
+                joinParty(msg);
+                break;
+
+            case "answer":
+                answer(msg);
+                break;
+
+            case "new-ice-candidate":
+                handleReceiverICECandidateEvent(msg);
+                break
+        }
+    }
+}
+
+//List the number of users in the current party created
+function updateUserList({ userList }) {
+    log('updated user list => ' + JSON.stringify(userList));
+    let peersList = document.getElementById('peer-list');
+
+    while (peersList.firstChild) {
+        peersList.removeChild(peersList.firstChild);
+    }
+    userList.forEach(userPeer => {
+        let listElement = document.createElement('li');
+        listElement.onclick = (e) => {
+            if (confirm("connect to " + userPeer.name)) {
+                createParty(userPeer.id);
+            }
+        }
+        listElement.innerText = userPeer.name;
+        peersList.appendChild(listElement);
     });
 }
 
-function getFromServer(url, params) {
-    return fetch(url, {
-        method: 'GET'
-    });
-}
-
-function stream() {
-    peer = masterPeer;
-    navigator.mediaDevices.getUserMedia({
-        audio: true
-    }).then((localStream) => {
-        peer.addStream(localStream);
-        // localStream.getTracks().forEach(track => peer.addStream(track, localStream));
-    });
-}
-
-function handleICEConnectionStateChangeEvent(event){
+function handleICEConnectionStateChangeEvent(event) {
     console.log(event);
 }
 
-function createParty() {
-    masterPeer = createPeerConnection(iceServers);
-    masterPeer.onicecandidate = handleMasterICECandidateEvent;
-    masterPeer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
-    masterPeer.createOffer(offerOptions).then((offer) => {
-        console.log(offer);
-        return masterPeer.setLocalDescription(offer);
-    }).then(() => {
-        console.log(masterPeer.localDescription);
-        return sendToServer(createOfferUrl, {
-            type: "offer",
-            sdp: masterPeer.localDescription
-        })
-    }).then((resp) => {
-        trace(resp);
-    }).catch(error => {
-        console.log(error);
-    });
+function handleSendChannelStatusChange(e) {
+    log("state of data channel" + sendChannel.readyState);
+    if (sendChannel) {
+        var state = sendChannel.readyState;
+        log("channel status changed => " + state);
+        if (state === "open") {
+
+            document.querySelector('.chat-mode').style.display = "block";
+        }
+    }
+}
+
+function createParty(targetId) {
+    targetIdentifier = targetId;
+    log("target id: " + targetId);
+    peer = createPeerConnection(iceServers);
+
+    //Event triggered when negotiation can take place as RTCpeer won't be stable
+    peer.onnegotiationneeded = handleNegotiationNeededEvent;
 }
 
 function handleTrackEvent(event) {
@@ -84,89 +137,125 @@ function handleTrackEvent(event) {
     audioButton.srcObject = event.streams[0];
 }
 
-function joinParty() {
-    slavePeer = createPeerConnection(iceServers);
-    slavePeer.onicecandidate = handleSlaveICECandidateEvent;
-    slavePeer.onaddstream = handleTrackEvent;
-    var masterOffer = getFromServer(getOfferUrl);
-    masterOffer.then(msg => {
-        msg.json().then(offer => {
-            var desc = new RTCSessionDescription(offer);
-            slavePeer.setRemoteDescription(desc).then(() => {
-                return slavePeer.createAnswer(offerOptions);
-            }).then(answer => {
-                slavePeer.setLocalDescription(answer);
-            }).then(function () {
-                return sendToServer(provideAnswerUrl, {
-                    type: "answer",
-                    sdp: slavePeer.localDescription
-                });
-            });
+async function joinParty(msg) {
+    targetIdentifier = msg.id;
+    log("joined party  =>" + msg.name);
+    peer = createPeerConnection(iceServers);
+
+    var desc = new RTCSessionDescription(msg.offer);
+
+    // If the connection isn't stable yet, wait for it...
+
+    if (peer.signalingState != "stable") {
+        log("  - But the signaling state isn't stable, so triggering rollback");
+
+        // Set the local and remove descriptions for rollback; don't proceed
+        // until both return.
+        await Promise.all([
+            peer.setLocalDescription({ type: "rollback" }),
+            peer.setRemoteDescription(desc)
+        ]);
+        return;
+    } else {
+        log("  - Setting remote description");
+        await peer.setRemoteDescription(desc);
+
+        let answer = await peer.createAnswer();
+        peer.setLocalDescription(answer);
+
+        sendToServer({
+            id: client.id,
+            type: "answer",
+            offer: peer.localDescription,
+            targetId: msg.id
         });
-    })
+    }
 }
 
+async function handleNegotiationNeededEvent() {
+    try {
+        log("Negotiation started");
 
+        const offer = await peer.createOffer();
+
+        // If the connection hasn't yet achieved the "stable" state,
+        // return to the caller. Another negotiationneeded event
+        // will be fired when the state stabilizes.
+        if (peer.signalingState != "stable") {
+            log("     -- The connection isn't stable yet; postponing...")
+            return;
+        }
+
+        log("Setting to local description");
+        await peer.setLocalDescription(offer);
+
+        sendToServer({
+            id: client.id,
+            type: "offer",
+            offer: peer.localDescription,
+            targetId: targetIdentifier
+        });
+
+    } catch (error) {
+        log(`Failed in Negotiation ${error}`)
+    }
+}
+
+function receiveChannelCallback(event) {
+    receiveChannel = event.channel;
+    receiveChannel.onmessage = handleDataChannelMessages;
+}
+
+function printMessage(text) {
+    let msg = document.createElement('p');
+    msg.textContent = text;
+    document.querySelector('.chat-mode').appendChild(msg);
+    return msg;
+}
+
+function handleDataChannelMessages(e) {
+    let incommingMsg = printMessage(e.data);
+    incommingMsg.classList.add('received-msg');
+}
 
 function createPeerConnection(iceServers) {
-    return new RTCPeerConnection({
+    peer = new RTCPeerConnection({
         iceServers
     });
+
+    //RTC Data Channel
+    sendChannel = peer.createDataChannel("sendChannel");
+    sendChannel.onopen = handleSendChannelStatusChange;
+
+    peer.onnegotiationneeded = handleNegotiationNeededEvent;
+    sendChannel.onclose = handleSendChannelStatusChange;
+
+    peer.ondatachannel = receiveChannelCallback;
+
+    peer.onicecandidate = handleMasterICECandidateEvent;
+    peer.oniceconnectionstatechange = handleICEConnectionStateChangeEvent;
 }
 
 function handleMasterICECandidateEvent(event) {
-    console.log("master ice candidate");
+    console.log("ice candidate handling");
+    console.log(event);
     if (event.candidate) {
-        sendToServer(createMasterIceCanditateUrl, {
+        sendToServer({
             type: "new-ice-candidate",
+            targetId: targetIdentifier,
             candidate: event.candidate
-        }).then(resp => {
-            console.log(resp)
-        });
+        })
     }
 }
 
-function handleSlaveICECandidateEvent(event) {
-    console.log("ice slave");
-    if (event.candidate) {
-        sendToServer(createSlaveIceCandidateUrl, {
-            type: "new-ice-candidate",
-            candidate: event.candidate
-        }).then(resp => {
-            console.log(resp)
-        });
-    }
+function handleReceiverICECandidateEvent({ candidate: remoteCandidate }) {
+    var candidate = new RTCIceCandidate(remoteCandidate);
+    log("Adding received ICE candidate " + JSON.stringify(candidate));
+
+    peer.addIceCandidate(candidate)
 }
 
-function addMasterCandidateToSlave() {
-    getFromServer(getMasterIceCandidateUrl).then(msg => {
-        msg.json().then(connection => {
-            var candidate = new RTCIceCandidate(connection.candidate);
-            slavePeer.addIceCandidate(candidate)
-        });
-    });
-}
-
-function addSlaveCandidateToMaster() {
-    getFromServer(getSlaveIceCandidateUrl).then(msg => {
-        msg.json().then(connection => {
-            var candidate = new RTCIceCandidate(connection.candidate);
-            masterPeer.addIceCandidate(candidate)
-        });
-    });
-}
-
-function answer() {
-    getFromServer(getAnswerUrl).then(msg => {
-        msg.json().then(offer => {
-            var desc = new RTCSessionDescription(offer);
-            masterPeer.setRemoteDescription(desc).then(() => console.log(masterPeer.remoteDescription));
-        });
-    })
-}
-
-function trace(resp) {
-    resp.text().then(text => {
-        console.log(text)
-    });
+function answer(msg) {
+    var desc = new RTCSessionDescription(msg.offer);
+    peer.setRemoteDescription(desc).then(() => console.log(peer.remoteDescription));
 }
