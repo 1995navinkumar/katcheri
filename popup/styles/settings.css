@@ -1,0 +1,33 @@
+.settings-page {
+    display: none;
+    text-align: center;
+}
+
+.settings-page p {
+    margin: 4px 0px;
+}
+
+[page='settings'] .settings-page {
+    display: block;
+}
+
+#settings-icon {
+    width: 18px;
+    height: 18px;
+    top: 9px;
+    right: 36px;
+    cursor: pointer;
+    margin: 0 4px;
+    order: -1;
+}
+
+#save-settings {
+    display: block;
+    margin: 8px 0px;
+    position: relative;
+    top: 32px;
+    left: 40px;
+    width: 76px;
+    height: 32px;
+    border-radius: 5px;
+}

@@ -1,0 +1,15 @@
+.video-container {
+    margin: 12px;
+}
+
+.controls {
+    margin: 12px;
+}
+
+[page='party'] .party-page {
+    display: block;
+}
+
+.party-page {
+    display: none;
+}

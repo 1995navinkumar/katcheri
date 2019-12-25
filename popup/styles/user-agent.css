@@ -1,0 +1,190 @@
+/**
+* Common browser's user-agent style overrides
+* Eg: <p> has default margin which differs on different browsers
+* We need to unify all those diverse behaviours to expected behaviours irrespective of browsers
+* Also we would treat all elements(vanilla) to give only semantic meaning not the style meaning
+* Refer: HTML5 semantics in w3c org
+*/
+
+/* --------------------------------------------------------------------- HTML5 display-role reset for older browsers ---------------------------------------------------------------------------- */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+/* --------------------------------------------------------------------- Override User Agent ---------------------------------------------------------------------------- */
+
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+blockquote,
+pre,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* --------------------------------------------------------------------- Major used block elements---------------------------------------------------------------------------- */
+
+p {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+ul,
+li {
+  margin: 0;
+  padding: 0;
+}
+
+ul {
+  list-style-type : none;
+}
+
+li {
+  list-style: none;
+}
+
+blockquote,
+q {
+  quotes: none;
+}
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* --------------------------------------------------------------------- Input / Action elements---------------------------------------------------------------------------- */
+
+button {
+  margin: 0;
+  padding: 0;
+  color: inherit;
+  background: none; /*IE 10 has a background gray when set to initial. So made it none*/
+  cursor: pointer;
+  border: none;
+  outline: none;
+  font: inherit;
+  vertical-align: middle;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  outline: none;
+}
+
+input {
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: initial;
+  font: inherit;
+  outline: none;
+}
+
+/* --------------------------------------------------------------------- Inline elements---------------------------------------------------------------------------- */

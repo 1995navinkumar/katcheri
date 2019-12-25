@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Peer Party</title>
+
+    <link rel="stylesheet" href="styles/user-agent.css">
+    <link rel="stylesheet" href="styles/app.css">
+    <link rel="stylesheet" href="styles/login.css">
+    <link rel="stylesheet" href="styles/home.css">
+    <link rel="stylesheet" href="styles/party.css">
+    <link rel="stylesheet" href="styles/settings.css">
+    <link rel="stylesheet" href="styles/notification.css">
+
+    <script src="js/common.js"></script>
+    <script src="js/login.js"></script>
+    <script src="js/home.js"></script>
+    <script src="js/party.js"></script>
+    <script src="js/settings.js"></script>
+
+</head>
+
+<body>
+    <div class="header">
+        <h2>Peer Party !!</h2>
+        <!-- <img hide id="home-icon" src="assets/home-icon.png" alt=""> -->
+        <img id="settings-icon" src="./assets/settings.png" alt="">
+        <div class="notification-icon-container">
+            <img id="notification-icon" class="icon" hide src="./assets/notification-icon.png" alt="" srcset="">
+            <div hide class="dot"></div>
+        </div>
+
+        <img hide id="logout-icon" src="assets/logout.png" alt="" srcset="">
+    </div>
+    <div id="message-container">
+
+    </div>
+    <div hide class="main">
+        <div hide class="login-page">
+            <img id="party-icon" src="assets/party-icon.png" alt="">
+            <button id="login-button">
+                Dive In
+            </button>
+        </div>
+        <div hide class="home-page">
+            <input id="input__party-name" type="text" placeholder="enter party name to join">
+            <button id="join-party">Join Party</button>
+            <button id="create-party">Create Party</button>
+        </div>
+
+        <div hide class="party-page">
+            <div id="party-name"></div>
+            <audio id="audio-player" autoplay controls></audio>
+            <div class="controls">
+                <button id="become-dj">Become DJ</button>
+            </div>
+        </div>
+
+        <div hide class="settings-page">
+            <p>Signalling Server</p>
+            <input id="signalling-server" type="text">
+
+            <p>Turn Server</p>
+            <input id="turn-server" type="text" name="">
+
+            <button id="save-settings">Save</button>
+        </div>
+    </div>
+    <div hide class="notification-page">
+        <div class="notification-list">
+            <div class="notification-content">
+                <p class="message">Become DJ</p>
+                <p class="requester">harish@gmail.com</p>
+            </div>
+            <button>Accept</button>
+            <button>Decline</button>
+        </div>
+    </div>
+</body>
+
+</html>

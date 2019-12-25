@@ -1,0 +1,27 @@
+{
+  "manifest_version": 2,
+  "name": "Peer Party",
+  "description": "This extension captures the audio on the current tab and streams it to the peers connected in a party",
+  "version": "1.0.0",
+  "browser_action": {
+    "default_popup": "popup/index.html"
+  },
+  "background": {
+    "scripts": [
+      "background/state.js",
+      "background/utils.js",
+      "background/rtc.js",
+      "background/popup-message-handler.js",
+      "background/server-message-handler.js",
+      "background/connection-manager.js"
+    ],
+    "persistent": true
+  },
+  "permissions": [
+    "identity",
+    "identity.email",
+    "tabs",
+    "tabCapture",
+    "activeTab"
+  ]
+}
