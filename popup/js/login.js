@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", function addListeners() {
         // connect to signalling server and redirect to home page if connected
         chrome.runtime.sendMessage({
             page: "login",
-            type: "login"
+            type: "login-success"
         });
     });
 
