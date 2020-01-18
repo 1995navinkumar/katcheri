@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+
 import {
 	HashRouter as Router,
 	Switch,
@@ -18,6 +19,19 @@ import Notification from './notification';
 import style from "./style.css";
 
 module.exports = function App() {
+	let [loggedIn, setLoggedIn] = useState(false);
+
+	useEffect(() => {
+		chrome.storage.sync.get(['loggedIn'], (syncStatus) => {
+			setLoggedIn(syncStatus.loggedIn);
+			if(syncStatus.loggedIn) {
+				chrome.runtime.sendMessage({
+					page: "login",
+					type: "alreadyLogined"
+				})
+			}
+		});
+	});
 	return (<Router>
 		<div>
 			<Header />
@@ -39,7 +53,7 @@ module.exports = function App() {
 						<Notification />
 					</Route>
 					<Route path="/">
-						<RedirectToRoute />
+						{loggedIn ? <Home /> : <Login />}
 					</Route>
 				</Switch>
 			</div>
@@ -48,7 +62,12 @@ module.exports = function App() {
 }
 
 function RedirectToRoute() {
+	
+
+	console.log(loggedIn);
 	return (
-		<Redirect to="login" />
+		<div>
+			{loggedIn ? (<Redirect to="home"/>) : (<Redirect to="login"/>)}
+		</div>
 	);
 }

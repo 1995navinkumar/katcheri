@@ -21,6 +21,7 @@
     "identity",
     "identity.email",
     "tabs",
+    "storage",
     "tabCapture",
     "activeTab"
   ]
