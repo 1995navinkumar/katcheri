@@ -1,0 +1,15 @@
+# dependencies
+/node_modules
+
+# production
+/build
+/public/css
+/public/js
+
+# testing
+
+# misc
+*.zip
+
+# my-files
+commits.md
