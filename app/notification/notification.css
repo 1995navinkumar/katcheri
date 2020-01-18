@@ -1,0 +1,44 @@
+.notification-icon-container {
+    position: relative;
+    margin-right: 6px;
+}
+
+.notification-page {
+    padding: 12px;
+    overflow: scroll;
+    height: calc(100% - 32px);
+}
+
+.notification-list {
+    display: flex;
+    padding: 8px;
+    border: 1px solid gray;
+    background-color: lavender;
+    margin-top: 16px;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.requester {
+    font-size: 10px;
+}
+
+.dot {
+    height: 8px;
+    width: 8px;
+    background-color: crimson;
+    border-radius: 50%;
+    display: inline-block;
+    position: absolute;
+    top: -5px;
+    right: 0px;
+    left: 11px;
+}
+
+[state='connected'] #notification-icon {
+    display: block;
+}

@@ -1,0 +1,35 @@
+#home-icon {
+    width: 30px;
+    height: 18px;
+    top: 9px;
+    left: 4px;
+    cursor: pointer;
+    order: -1;
+}
+
+.home-page {
+    text-align: center;
+}
+
+[page='home'] .home-page {
+    display: block;
+}
+
+#input__party-name {
+    padding: 4px;
+    margin: 16px auto;
+    display: block;
+}
+
+:not([page='login']) #home-icon {
+    display: block;
+}
+
+[page='login'] #home-icon {
+    display: none;
+}
+
+#create-party , #join-party {
+    height: 28px;
+}
+
