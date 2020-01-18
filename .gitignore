@@ -1,10 +1,10 @@
 # dependencies
-/node_modules
+node_modules
 
 # production
-/build
-/public/css
-/public/js
+build
+public/js
+public/css
 
 # testing
 

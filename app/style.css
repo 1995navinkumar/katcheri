@@ -1,54 +1,81 @@
-/**
- * Apply border box property to all elements
- * Easier to calculate sizes
- * https://css-tricks.com/box-sizing/
-*/
-*{
+* {
   box-sizing: border-box;
 }
 
-/**
- * html element takes full viewports width.
- * Useful to SPAs
- * html itself is a `position` element allows us to
- * position other elments
- */
-html{
-  height: 100%;
-  overflow: auto;
+body {
+  width: 300px;
+  height: 300px;
+  padding: 4px;
 }
 
-
-/**
-* By default takes the full screen space
-* Overflow
-*/
-body{
-  min-height: 100%;
-  position: relative;
-  line-height: 1.6em;
+[hide] {
+  display: none;
 }
 
-/**
- * Fallback styles, can be overridden by component styles
- */
-html,body{
-  padding: 0;
-  margin: 0;
-  width: 100%;
+[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-  /* fallback style */
-  background-color: #fff;
+.icon {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
 
-  font-family: 'Open Sans', sans-serif;
+button {
+  display: inline-block;
+  padding: 4px 8px;
+  margin: 0 0.3em 0.3em 0;
+  border-radius: 0.2em;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: 'Roboto', sans-serif;
   font-weight: 400;
-  font-display: optional;
-  color: #444;
-
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  font-size:14px;
+  color: #FFFFFF;
+  background-color: #6a2aa5;
+  box-shadow: inset 0 -0.6em 1em -0.35em rgba(0, 0, 0, 0.17), inset 0 0.6em 2em -0.3em rgba(255, 255, 255, 0.15), inset 0 0 0em 0.05em rgba(255, 255, 255, 0.12);
+  text-align: center;
+  position: relative;
+  font-size: 12px;
 }
 
+input {
+  padding: 2px;
+  margin: 0;
+  border: 1px solid gray;
+  border-radius: 6px;
+  font: inherit;
+  outline: none;
+}
 
+.header {
+  display: flex;
+  align-items: center;
+  height: 32px;
+  border-bottom: 1px solid lightgray
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: calc(100% - 32px);
+}
+
+h2 {
+  margin: 0;
+  padding: 6px;
+  flex: 1;
+  text-align: center;
+  position: relative;
+  left: 6px;
+  font-size: larger;
+  font-weight: bolder;
+}
+
+#party-icon {
+  width: 88px;
+  height: 88px;
+}
