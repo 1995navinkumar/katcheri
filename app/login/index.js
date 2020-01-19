@@ -3,20 +3,27 @@ import style from './login.css';
 import { withRouter } from "react-router-dom";
 
 class Login extends React.Component {
-
+    constructor(props) {
+        super(props);
+        this.onMessage = this.onMessage.bind(this);
+    }
     login() {
         chrome.runtime.sendMessage({
             page: "login",
             type: "login"
         });
-        let self = this;
-        chrome.runtime.onMessage.addListener(({page, type}) => {
-            if(page === "login") {
-                self.props.history.push("home");
-            }
-        })
     }
-
+    onMessage({ page, type }) {
+        if (page === "login") {
+            this.props.history.push("home");
+        }
+    }
+    componentDidMount() {
+        chrome.runtime.onMessage.addListener(this.onMessage);
+    }
+    componentWillUnmount() {
+        chrome.runtime.onMessage.removeListener(this.onMessage);
+    }
     render() {
         return (
             <div className="login-page">

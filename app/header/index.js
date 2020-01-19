@@ -13,8 +13,6 @@ class Header extends React.Component {
         this.props.history.push("notification");
     }
     redirectToLogin() {
-        // this.props.history.push("login");
-
         chrome.runtime.sendMessage({
             page: "login",
             type: "logout"
