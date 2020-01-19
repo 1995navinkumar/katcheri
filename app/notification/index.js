@@ -6,12 +6,15 @@ export default class Notification extends React.Component {
         return (
             <div className="notification-page">
                 <div className="notification-list">
+                    <div className="notification-avatar"></div>
                     <div className="notification-content">
                         <p className="message">Become DJ</p>
                         <p className="requester">harish@gmail.com</p>
                     </div>
-                    <button>Accept</button>
-                    <button>Decline</button>
+                    <div className="notification-action">
+                        <button>Accept</button>
+                        <button>Decline</button>
+                    </div>
                 </div>
             </div>
         );

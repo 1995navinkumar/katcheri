@@ -17,7 +17,6 @@ import Settings from './settings'
 import Notification from './notification';
 
 import style from "./style.css";
-// import snackbarStyle from '@material/react-snackbar/dist/snackbar.css';
 
 module.exports = function App() {
 	let [loggedIn, setLoggedIn] = useState(false);
@@ -25,7 +24,7 @@ module.exports = function App() {
 	useEffect(() => {
 		chrome.storage.sync.get(['loggedIn'], (syncStatus) => {
 			setLoggedIn(syncStatus.loggedIn);
-			if(syncStatus.loggedIn) {
+			if (syncStatus.loggedIn) {
 				chrome.runtime.sendMessage({
 					page: "login",
 					type: "alreadyLogined"
@@ -34,39 +33,40 @@ module.exports = function App() {
 		});
 	});
 	return (<Router>
-			<Header />
-			<div className="main">
-				<Switch>
-					<Route path="/login">
-						<Login />
-					</Route>
-					<Route path="/home">
-						<Home />
-					</Route>
-					<Route path="/party">
-						<Party />
-					</Route>
-					<Route path="/settings">
-						<Settings />
-					</Route>
-					<Route path="/notification">
-						<Notification />
-					</Route>
-					<Route path="/">
-						{loggedIn ? <Home /> : <Login />}
-					</Route>
-				</Switch>
-			</div>
+		<Header />
+		<div className="main">
+			<Switch>
+				<Route path="/login">
+					<Login />
+				</Route>
+				<Route path="/home">
+					<Home />
+				</Route>
+				<Route path="/party">
+					<Party />
+				</Route>
+				<Route path="/settings">
+					<Settings />
+				</Route>
+				<Route path="/notification">
+					<Notification />
+				</Route>
+				<Route path="/">
+					{loggedIn ? <Home /> : <Login />}
+				</Route>
+			</Switch>
+		</div>
+
 	</Router>);
 }
 
 function RedirectToRoute() {
-	
+
 
 	console.log(loggedIn);
 	return (
 		<div>
-			{loggedIn ? (<Redirect to="home"/>) : (<Redirect to="login"/>)}
+			{loggedIn ? (<Redirect to="home" />) : (<Redirect to="login" />)}
 		</div>
 	);
 }
