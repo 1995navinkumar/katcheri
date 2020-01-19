@@ -8,6 +8,10 @@ body {
   padding: 4px;
 }
 
+#react-root {
+  height: inherit;
+}
+
 [hide] {
   display: none;
 }

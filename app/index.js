@@ -17,6 +17,7 @@ import Settings from './settings'
 import Notification from './notification';
 
 import style from "./style.css";
+import snackbarStyle from '@material/react-snackbar/dist/snackbar.css';
 
 module.exports = function App() {
 	let [loggedIn, setLoggedIn] = useState(false);
@@ -33,7 +34,6 @@ module.exports = function App() {
 		});
 	});
 	return (<Router>
-		<div>
 			<Header />
 			<div className="main">
 				<Switch>
@@ -57,7 +57,6 @@ module.exports = function App() {
 					</Route>
 				</Switch>
 			</div>
-		</div>
 	</Router>);
 }
 

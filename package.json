@@ -12,7 +12,7 @@
     "build:js": "browserify main.js -t babelify -t browserify-css -t uglifyify | uglifyjs -cm > extension/public/js/bundle.js",
     "build": "NODE_ENV=production run-s build:*",
     "watch:css": "watchify style.js -t [ browserify-css --output extension/public/css/bundle.css ] -o /dev/null -dv",
-    "watch:js": "watchify main.js -t babelify -t browserify-css -o extension/public/js/bundle.js -dv",
+    "watch:js": "watchify main.js -t babelify -g browserify-css -o extension/public/js/bundle.js -dv",
     "watch": "run-p watch:*",
     "clean": "rimraf extension/public/js extension/public/css node_modules",
     "start": "serve extension/public"
@@ -35,6 +35,9 @@
   },
   "homepage": "https://github.com/1995navinkumar/peer-party#readme",
   "dependencies": {
+    "@material-ui/core": "^4.8.3",
+    "@material-ui/lab": "^4.0.0-alpha.39",
+    "@material/react-snackbar": "^0.15.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.1.2"
