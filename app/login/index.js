@@ -1,6 +1,7 @@
 import React from "react";
 import style from './login.css';
 import { withRouter } from "react-router-dom";
+import Snackbar from '../snackbar';
 
 class Login extends React.Component {
     constructor(props) {
@@ -27,8 +28,11 @@ class Login extends React.Component {
     render() {
         return (
             <div className="login-page">
-                <img id="party-icon" src="assets/img/party-icon.png" />
-                <button id="login-button" onClick={this.login.bind(this)}>Dive In</button>
+                <Snackbar message="Sync is disabled..!" actionComponent={<button>Ok</button>} />
+                <div className="login-content">
+                    <img id="party-icon" src="assets/img/party-icon.png" />
+                    <button id="login-button" onClick={this.login.bind(this)}>Dive In</button>
+                </div>
             </div>
         );
     }
