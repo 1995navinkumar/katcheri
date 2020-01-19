@@ -22,7 +22,8 @@ var login = {
 var home = {
     "create-party": function (popup, data) {
         ConnectionManager.getConnection().request({
-            type: "create-party"
+            type: "create-party",
+            data
         });
     },
     "join-party": function (popup, data) {
