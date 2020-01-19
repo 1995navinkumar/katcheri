@@ -37,7 +37,6 @@
   "dependencies": {
     "@material-ui/core": "^4.8.3",
     "@material-ui/lab": "^4.0.0-alpha.39",
-    "@material/react-snackbar": "^0.15.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.1.2"

@@ -17,7 +17,6 @@ import Settings from './settings'
 import Notification from './notification';
 
 import style from "./style.css";
-import snackbarStyle from '@material/react-snackbar/dist/snackbar.css';
 
 module.exports = function App() {
 	let [loggedIn, setLoggedIn] = useState(false);

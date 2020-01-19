@@ -3,14 +3,31 @@
     margin-right: 6px;
 }
 
+.notification-avatar {
+    height: 32px;
+    width: 32px;
+    float: left;
+    margin-right: 12px;
+    background: red;
+    border-radius: 50%;
+    position: relative;
+    top: -3px;
+}
+
+.notification-action {
+    text-align: right;
+    margin-top: 8px;
+}
+
 .notification-page {
+    width: 100%;
     padding: 12px;
     overflow: scroll;
     height: calc(100% - 32px);
 }
 
 .notification-list {
-    display: flex;
+    /* display: flex; */
     padding: 8px;
     border: 1px solid gray;
     background-color: lavender;
