@@ -47,7 +47,7 @@ var actions = {
         audioStream = getAudioStream();
     },
     "join-party": async function (message) {
-        var clientIds = message.data.clientIds;
+        var clientIds = message.data.memberIds;
         var streamObj = await audioStream;
         clientIds.forEach((clientId) => {
             var clientPeer = new RTC_Connnector(iceServers, streamObj);
@@ -126,9 +126,36 @@ var response = {
             type: "join-party-success",
             data
         })
+    },
+    "dj-accept": function() {
+        audioStream = getAudioStream();
+    }
+}
+
+var notification = {
+    "join-party": async function (message) {
+        var clientIds = message.data.memberIds;
+        var streamObj = await audioStream;
+        clientIds.forEach((clientId) => {
+            var clientPeer = new RTC_Connnector(iceServers, streamObj);
+            partyMembers[clientId] = clientPeer;
+            clientPeer.on('offerReady', function (offer) {
+                signal({
+                    action: "offer",
+                    data: { offer, clientId }
+                });
+            });
+            clientPeer.on('candidateReady', function (candidate) {
+                signal({
+                    action: "candidate",
+                    data: { candidate, clientId }
+                });
+            })
+        });
     }
 }
 
 var IncomingMessageHandler = {
-    response
+    response,
+    notification
 }

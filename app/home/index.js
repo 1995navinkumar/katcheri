@@ -15,9 +15,15 @@ class Home extends React.Component {
 
     onMessage(message) {
         if(message.type === "party-creation-success") {
-            this.props.history.push("party",{type: 'create', data: {
-                partyId: message.data.partyId
-            }});
+            this.props.history.push({
+              pathname: "party",
+              state: {
+                type: "create",
+                data: {
+                  partyId: message.data.partyId
+                }
+              }
+            });
         }
 
         if(message.type === "join-party-success") {

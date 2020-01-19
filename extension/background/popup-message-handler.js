@@ -27,15 +27,15 @@ var home = {
         });
     },
     "join-party": function (popup, data) {
-        ConnectionManager.getConnection().request({
-            type: "join-party",
-            data
-        })
     }
 }
 
 var party = {
-
+    "become-dj": function() {
+        ConnectionManager.getConnection().request({
+            type: "become-dj",
+        })
+    }
 }
 
 var pageMapper = {
