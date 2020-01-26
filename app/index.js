@@ -19,29 +19,26 @@ import Notification from './notification';
 import style from "./style.css";
 
 module.exports = function App() {
-	let [loggedIn, setLoggedIn] = useState(false);
+	let [connectionState, setConnectionState] = useState(false);
+
+	chrome.runtime.sendMessage({
+		page: "login",
+		type: "connection-state"
+	})
 
 	useEffect(() => {
 
-		chrome.storage.sync.get(['loggedIn'], (syncStatus) => {
-			setLoggedIn(syncStatus.loggedIn);
-			if (syncStatus.loggedIn) {
-				chrome.runtime.sendMessage({
-					page: "login",
-					type: "alreadyLogined"
-				})
-			}
-		});
+	})
+
+	setTimeout(() => {
+		setConnectionState(true);
+	}, 2000)
+
+	chrome.runtime.onMessage.addListener(message => {
+
 	});
 
-	function connectionState() {
-		chrome.runtime.sendMessage({
-			page: "login",
-			type: "connection-state"
-		})
-	}
 
-	
 
 	return (<Router>
 		<Header />
@@ -63,7 +60,7 @@ module.exports = function App() {
 					<Notification />
 				</Route>
 				<Route path="/">
-					{loggedIn ? <Home /> : <Login />}
+					{connectionState ? <RedirectToRoute /> : <div>Loading....</div>}
 				</Route>
 			</Switch>
 		</div>
@@ -72,12 +69,16 @@ module.exports = function App() {
 }
 
 function RedirectToRoute() {
+	var connectionState = localStorage.getItem("connectionState");
+	var route;
 
+	if (connectionState == "online") {
+		route = <Redirect to="/login" />;
+	} else {
+		route = <Redirect to="/settings" />;
 
-	console.log(loggedIn);
+	}
 	return (
-		<div>
-			{loggedIn ? (<Redirect to="home" />) : (<Redirect to="login" />)}
-		</div>
+		route
 	);
 }

@@ -13,7 +13,8 @@ var login = {
     },
 
     "connection-state": function (popup) {
-        return ConnectionManager.getConnection();
+        var connection = ConnectionManager.getConnection();
+        popup.sendMessage({ page: "login", type: "connection-state", data: { state: !!connection } })
     },
 
     logout: function logout(popup, data) {
@@ -35,7 +36,7 @@ var home = {
 }
 
 var party = {
-    "become-dj": function() {
+    "become-dj": function () {
         ConnectionManager.getConnection().request({
             type: "become-dj",
         })
