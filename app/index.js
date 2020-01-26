@@ -22,6 +22,7 @@ module.exports = function App() {
 	let [loggedIn, setLoggedIn] = useState(false);
 
 	useEffect(() => {
+
 		chrome.storage.sync.get(['loggedIn'], (syncStatus) => {
 			setLoggedIn(syncStatus.loggedIn);
 			if (syncStatus.loggedIn) {
@@ -32,6 +33,16 @@ module.exports = function App() {
 			}
 		});
 	});
+
+	function connectionState() {
+		chrome.runtime.sendMessage({
+			page: "login",
+			type: "connection-state"
+		})
+	}
+
+	
+
 	return (<Router>
 		<Header />
 		<div className="main">

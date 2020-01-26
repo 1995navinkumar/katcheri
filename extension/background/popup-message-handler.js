@@ -2,19 +2,23 @@
 var login = {
     login: function login(popup, data) {
         ConnectionManager.createConnection().then(connection => {
-            chrome.storage.sync.set({loggedIn: true});
+            chrome.storage.sync.set({ loggedIn: true });
             popup.sendMessage({ page: "login", type: "login-success" });
         })
     },
-    alreadyLogined: function(popup) {
-        if(!ConnectionManager.getConnection()) {
+    alreadyLogined: function (popup) {
+        if (!ConnectionManager.getConnection()) {
             this.login(popup)
         }
     },
 
+    "connection-state": function (popup) {
+        return ConnectionManager.getConnection();
+    },
+
     logout: function logout(popup, data) {
         ConnectionManager.terminateConnection();
-        chrome.storage.sync.set({loggedIn: false});
+        chrome.storage.sync.set({ loggedIn: false });
         popup.sendMessage({ page: "login", type: "logout-success" });
     }
 }
