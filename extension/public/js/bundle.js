@@ -1,5 +1,5 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-var css = "#settings-icon{width:18px;height:18px;top:9px;right:36px;cursor:pointer;margin:0 4px;order:-1}#logout-icon{cursor:pointer;right:10px;top:10px;width:16px;height:16px;margin:0 4px}"; (require("browserify-css").createStyle(css, { "href": "app/header/header.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "#settings-icon{width:18px;height:18px;top:9px;right:36px;cursor:pointer;margin:0 4px;order:-1}#logout-icon{cursor:pointer;right:10px;top:10px;width:16px;height:16px;margin:0 4px}"; (require("browserify-css").createStyle(css, { "href": "app\\header\\header.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],2:[function(require,module,exports){
 "use strict";
 
@@ -106,7 +106,7 @@ var _default = (0, _reactRouterDom.withRouter)(Header);
 exports["default"] = _default;
 
 },{"./header.css":1,"react":49,"react-router-dom":43}],3:[function(require,module,exports){
-var css = "#home-icon{width:30px;height:18px;top:9px;left:4px;cursor:pointer;order:-1}.home-page{text-align:center}[page=home] .home-page{display:block}#input__party-name{padding:4px;margin:16px auto;display:block}:not([page=login]) #home-icon{display:block}[page=login] #home-icon{display:none}#create-party,#join-party{height:28px}"; (require("browserify-css").createStyle(css, { "href": "app/home/home.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "#home-icon{width:30px;height:18px;top:9px;left:4px;cursor:pointer;order:-1}.home-page{text-align:center}[page=home] .home-page{display:block}#input__party-name{padding:4px;margin:16px auto;display:block}:not([page=login]) #home-icon{display:block}[page=login] #home-icon{display:none}#create-party,#join-party{height:28px}"; (require("browserify-css").createStyle(css, { "href": "app\\home\\home.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],4:[function(require,module,exports){
 "use strict";
 
@@ -118,6 +118,8 @@ exports["default"] = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _home = _interopRequireDefault(require("./home.css"));
+
+var _reactRouterDom = require("react-router-dom");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -131,9 +133,9 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
@@ -144,25 +146,95 @@ var Home =
 function (_React$Component) {
   _inherits(Home, _React$Component);
 
-  function Home() {
+  function Home(props) {
+    var _this;
+
     _classCallCheck(this, Home);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Home).apply(this, arguments));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Home).call(this, props));
+    _this.state = {
+      partyName: ''
+    };
+    _this.onMessage = _this.onMessage.bind(_assertThisInitialized(_this));
+    return _this;
   }
 
   _createClass(Home, [{
+    key: "onMessage",
+    value: function onMessage(message) {
+      if (message.type === "party-creation-success") {
+        this.props.history.push({
+          pathname: "party",
+          state: {
+            type: "create",
+            data: {
+              partyId: message.data.partyId
+            }
+          }
+        });
+      }
+
+      if (message.type === "join-party-success") {
+        this.props.history.push("party", {
+          type: "join"
+        });
+      }
+    }
+  }, {
+    key: "handleChange",
+    value: function handleChange(event) {
+      this.setState({
+        partyName: event.target.value
+      });
+    }
+  }, {
+    key: "createParty",
+    value: function createParty() {
+      var partyName = this.state.partyName;
+      chrome.runtime.sendMessage({
+        page: "home",
+        type: "create-party"
+      });
+    }
+  }, {
+    key: "joinParty",
+    value: function joinParty() {
+      var partyName = this.state.partyName;
+      chrome.runtime.sendMessage({
+        page: "home",
+        type: "join-party",
+        data: {
+          partyId: partyName
+        }
+      });
+    }
+  }, {
+    key: "componentDidMount",
+    value: function componentDidMount() {
+      chrome.runtime.onMessage.addListener(this.onMessage);
+    }
+  }, {
+    key: "componentWillUnmount",
+    value: function componentWillUnmount() {
+      chrome.runtime.onMessage.removeListener(this.onMessage);
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react["default"].createElement("div", {
         className: "home-page"
       }, _react["default"].createElement("input", {
         id: "input__party-name",
+        value: this.state.partyName,
+        onChange: this.handleChange.bind(this),
         type: "text",
         placeholder: "enter party name to join"
       }), _react["default"].createElement("button", {
-        id: "join-party"
+        id: "join-party",
+        onClick: this.joinParty.bind(this)
       }, "Join Party"), _react["default"].createElement("button", {
-        id: "create-party"
+        id: "create-party",
+        onClick: this.createParty.bind(this)
       }, "Create Party"));
     }
   }]);
@@ -170,9 +242,11 @@ function (_React$Component) {
   return Home;
 }(_react["default"].Component);
 
-exports["default"] = Home;
+var _default = (0, _reactRouterDom.withRouter)(Home);
 
-},{"./home.css":3,"react":49}],5:[function(require,module,exports){
+exports["default"] = _default;
+
+},{"./home.css":3,"react":49,"react-router-dom":43}],5:[function(require,module,exports){
 "use strict";
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
@@ -370,7 +444,7 @@ var _default = (0, _reactRouterDom.withRouter)(Login);
 exports["default"] = _default;
 
 },{"../snackbar":14,"./login.css":7,"react":49,"react-router-dom":43}],7:[function(require,module,exports){
-var css = "#party-icon{width:88px;height:88px}#login-button{width:96px;height:32px;display:block;margin-top:16px;background-color:#6a2aa5;color:#fff;font-weight:bolder;font-size:16px}.login-page{padding:8px;margin:8px 0;height:100%;display:flex;flex-direction:column}#logout-icon{cursor:pointer;right:10px;top:10px;width:16px;height:16px;margin:0 4px}.login-content{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1}.login-message{padding:8px;border:2px solid #6a2aa5;border-radius:12px;background-color:#e6e6fa}"; (require("browserify-css").createStyle(css, { "href": "app/login/login.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "#login-button{width:96px;height:32px;display:block;margin-top:16px;background-color:#6a2aa5;color:#fff;font-weight:bolder;font-size:16px}.login-page{padding:8px;margin:8px 0}#logout-icon{cursor:pointer;right:10px;top:10px;width:16px;height:16px;margin:0 4px}[page=login] .login-page{display:block}[state=connected] #logout-icon{display:block}"; (require("browserify-css").createStyle(css, { "href": "app\\login\\login.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],8:[function(require,module,exports){
 "use strict";
 
@@ -441,7 +515,7 @@ function (_React$Component) {
 exports["default"] = Notification;
 
 },{"./notification.css":9,"react":49}],9:[function(require,module,exports){
-var css = ".notification-icon-container{position:relative;margin-right:6px}.notification-avatar{height:32px;width:32px;float:left;margin-right:12px;background:red;border-radius:50%;position:relative;top:-3px}.notification-action{text-align:right;margin-top:8px}.notification-page{width:100%;padding:12px;overflow:scroll;height:calc(100% - 32px)}.notification-list{padding:8px;border:1px solid gray;background-color:#e6e6fa;margin-top:16px}.notification-content{display:flex;flex-direction:column;flex:1}.requester{font-size:10px}.dot{height:8px;width:8px;background-color:#dc143c;border-radius:50%;display:inline-block;position:absolute;top:-5px;right:0;left:11px}[state=connected] #notification-icon{display:block}"; (require("browserify-css").createStyle(css, { "href": "app/notification/notification.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = ".notification-icon-container{position:relative;margin-right:6px}.notification-avatar{height:32px;width:32px;float:left;margin-right:12px;background:red;border-radius:50%;position:relative;top:-3px}.notification-action{text-align:right;margin-top:8px}.notification-page{width:100%;padding:12px;overflow:scroll;height:calc(100% - 32px)}.notification-list{padding:8px;border:1px solid gray;background-color:#e6e6fa;margin-top:16px}.notification-content{display:flex;flex-direction:column;flex:1}.requester{font-size:10px}.dot{height:8px;width:8px;background-color:#dc143c;border-radius:50%;display:inline-block;position:absolute;top:-5px;right:0;left:11px}[state=connected] #notification-icon{display:block}"; (require("browserify-css").createStyle(css, { "href": "app\\notification\\notification.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],10:[function(require,module,exports){
 "use strict";
 
@@ -453,6 +527,8 @@ exports["default"] = void 0;
 var _react = _interopRequireDefault(require("react"));
 
 var _party = _interopRequireDefault(require("./party.css"));
+
+var _reactRouterDom = require("react-router-dom");
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { "default": obj }; }
 
@@ -486,20 +562,29 @@ function (_React$Component) {
   }
 
   _createClass(Party, [{
+    key: "onbecomeDjClick",
+    value: function onbecomeDjClick() {
+      chrome.runtime.sendMessage({
+        page: "party",
+        type: "become-dj"
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
       return _react["default"].createElement("div", {
         className: "party-page"
       }, _react["default"].createElement("div", {
         id: "party-name"
-      }), _react["default"].createElement("audio", {
+      }, this.props.history.location.state.data.partyId), _react["default"].createElement("audio", {
         id: "audio-player",
         autoPlay: true,
         controls: true
       }), _react["default"].createElement("div", {
         className: "controls"
       }, _react["default"].createElement("button", {
-        id: "become-dj"
+        id: "become-dj",
+        onClick: this.onbecomeDjClick.bind(this)
       }, "Become DJ")));
     }
   }]);
@@ -507,10 +592,12 @@ function (_React$Component) {
   return Party;
 }(_react["default"].Component);
 
-exports["default"] = Party;
+var _default = (0, _reactRouterDom.withRouter)(Party);
 
-},{"./party.css":11,"react":49}],11:[function(require,module,exports){
-var css = ".video-container{margin:12px}.controls{margin:12px}[page=party] .party-page{display:block}"; (require("browserify-css").createStyle(css, { "href": "app/party/party.css" }, { "insertAt": "bottom" })); module.exports = css;
+exports["default"] = _default;
+
+},{"./party.css":11,"react":49,"react-router-dom":43}],11:[function(require,module,exports){
+var css = ".video-container{margin:12px}.controls{margin:12px}[page=party] .party-page{display:block}"; (require("browserify-css").createStyle(css, { "href": "app\\party\\party.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],12:[function(require,module,exports){
 "use strict";
 
@@ -588,7 +675,7 @@ var _default = (0, _reactRouterDom.withRouter)(Login);
 exports["default"] = _default;
 
 },{"./settings.css":13,"react":49,"react-router-dom":43}],13:[function(require,module,exports){
-var css = ".settings-page{text-align:center}.settings-page p{margin:4px 0}[page=settings] .settings-page{display:block}#settings-icon{width:18px;height:18px;top:9px;right:36px;cursor:pointer;margin:0 4px;order:-1}#save-settings{display:block;margin:8px 0;position:relative;top:32px;left:40px;width:76px;height:32px;border-radius:5px}"; (require("browserify-css").createStyle(css, { "href": "app/settings/settings.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = ".settings-page{text-align:center}.settings-page p{margin:4px 0}[page=settings] .settings-page{display:block}#settings-icon{width:18px;height:18px;top:9px;right:36px;cursor:pointer;margin:0 4px;order:-1}#save-settings{display:block;margin:8px 0;position:relative;top:32px;left:40px;width:76px;height:32px;border-radius:5px}"; (require("browserify-css").createStyle(css, { "href": "app\\settings\\settings.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],14:[function(require,module,exports){
 "use strict";
 
@@ -652,9 +739,9 @@ function (_React$Component) {
 exports["default"] = Snackbar;
 
 },{"./snackbar.css":15,"react":49}],15:[function(require,module,exports){
-var css = ".snackbar{display:flex;padding:8px;border:2px solid #6a2aa5;border-radius:12px;background-color:#e6e6fa;min-height:44px}.snackbar-content{flex:1}"; (require("browserify-css").createStyle(css, { "href": "app/snackbar/snackbar.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = ".snackbar{display:flex;padding:8px;border:2px solid #6a2aa5;border-radius:12px;background-color:#e6e6fa;min-height:44px}.snackbar-content{flex:1}"; (require("browserify-css").createStyle(css, { "href": "app\\snackbar\\snackbar.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],16:[function(require,module,exports){
-var css = "*{box-sizing:border-box}body{width:300px;height:300px;padding:4px}#react-root{height:inherit}[hide]{display:none}[disabled]{opacity:.5;cursor:not-allowed}.icon{width:18px;height:18px;cursor:pointer}button{display:inline-block;padding:4px 8px;margin:0 .3em .3em 0;border-radius:.2em;box-sizing:border-box;text-decoration:none;font-family:Roboto,sans-serif;font-weight:400;color:#fff;background-color:#6a2aa5;box-shadow:inset 0 -.6em 1em -.35em rgba(0,0,0,.17),inset 0 .6em 2em -.3em rgba(255,255,255,.15),inset 0 0 0 .05em rgba(255,255,255,.12);text-align:center;position:relative;font-size:12px}input{padding:2px;margin:0;border:1px solid gray;border-radius:6px;font:inherit;outline:0}.header{display:flex;align-items:center;height:32px;border-bottom:1px solid #d3d3d3}.main{flex-direction:column;align-items:center;justify-content:center;height:calc(100% - 32px)}h2{margin:0;padding:6px;flex:1;text-align:center;position:relative;left:6px;font-size:larger;font-weight:bolder}"; (require("browserify-css").createStyle(css, { "href": "app/style.css" }, { "insertAt": "bottom" })); module.exports = css;
+var css = "*{box-sizing:border-box}body{width:300px;height:300px;padding:4px}#react-root{height:inherit}[hide]{display:none}[disabled]{opacity:.5;cursor:not-allowed}.icon{width:18px;height:18px;cursor:pointer}button{display:inline-block;padding:4px 8px;margin:0 .3em .3em 0;border-radius:.2em;box-sizing:border-box;text-decoration:none;font-family:Roboto,sans-serif;font-weight:400;color:#fff;background-color:#6a2aa5;box-shadow:inset 0 -.6em 1em -.35em rgba(0,0,0,.17),inset 0 .6em 2em -.3em rgba(255,255,255,.15),inset 0 0 0 .05em rgba(255,255,255,.12);text-align:center;position:relative;font-size:12px}input{padding:2px;margin:0;border:1px solid gray;border-radius:6px;font:inherit;outline:0}.header{display:flex;align-items:center;height:32px;border-bottom:1px solid #d3d3d3}.main{flex-direction:column;align-items:center;justify-content:center;height:calc(100% - 32px)}h2{margin:0;padding:6px;flex:1;text-align:center;position:relative;left:6px;font-size:larger;font-weight:bolder}"; (require("browserify-css").createStyle(css, { "href": "app\\style.css" }, { "insertAt": "bottom" })); module.exports = css;
 },{"browserify-css":19}],17:[function(require,module,exports){
 "use strict";
 
