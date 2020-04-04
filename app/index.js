@@ -18,67 +18,84 @@ import Notification from './notification';
 
 import style from "./style.css";
 
-module.exports = function App() {
-	let [connectionState, setConnectionState] = useState(false);
+module.exports = class App extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			style: {
+				visibility: "visible"
+			},
+			route: ""
+		};
+	}
 
-	chrome.runtime.sendMessage({
-		page: "login",
-		type: "connection-state"
-	})
+	componentDidMount() {
+		getBackgroundPage().then(page => {
+			var connection = page.ConnectionManager.getConnection();
+			if (connection && connection.ws.readyState == 1) {
+				this.setState({
+					style: { visibility: "hidden" },
+					route: "/home"
+				})
+			} else {
+				this.setState({
+					style: { visibility: "hidden" },
+					route: '/party'
+				})
+			}
+		});
+	}
 
-	useEffect(() => {
+	render() {
 
-	})
+		return (
+			<Router>
+				<Header />
+				<div className="main">
+					<div className="load-bar" style={this.state.style}>
+						<div className="bar"></div>
+						<div className="bar"></div>
+						<div className="bar"></div>
+					</div>
+					<Switch>
+						<Route path="/login">
+							<Login />
+						</Route>
+						<Route path="/home">
+							<Home />
+						</Route>
+						<Route path="/party">
+							<Party />
+						</Route>
+						<Route path="/settings">
+							<Settings />
+						</Route>
+						<Route path="/notification">
+							<Notification />
+						</Route>
+						<Route path="/">
+							{this.state.route ? <Redirect to={this.state.route} /> : "Loading..."}
+						</Route>
+					</Switch>
+				</div>
 
-	setTimeout(() => {
-		setConnectionState(true);
-	}, 2000)
+			</Router>
+		);
+	}
+}
 
-	chrome.runtime.onMessage.addListener(message => {
+function getBackgroundPage() {
+	return new Promise((resolve, reject) => {
+		console.log(resolve);
 
+		chrome.runtime.getBackgroundPage(resolve);
 	});
-
-
-
-	return (<Router>
-		<Header />
-		<div className="main">
-			<Switch>
-				<Route path="/login">
-					<Login />
-				</Route>
-				<Route path="/home">
-					<Home />
-				</Route>
-				<Route path="/party">
-					<Party />
-				</Route>
-				<Route path="/settings">
-					<Settings />
-				</Route>
-				<Route path="/notification">
-					<Notification />
-				</Route>
-				<Route path="/">
-					{connectionState ? <RedirectToRoute /> : <div>Loading....</div>}
-				</Route>
-			</Switch>
-		</div>
-
-	</Router>);
 }
 
 function RedirectToRoute() {
-	var connectionState = localStorage.getItem("connectionState");
-	var route;
+	return getBackgroundPage().then(function (page) {
+		console.log(page);
 
-	if (connectionState == "online") {
-		route = <Redirect to="/login" />;
-	} else {
-		route = <Redirect to="/settings" />;
-
-	}
-	return (
-		route
-	);
+		return (<Redirect to="/login" />);
+	})
 }

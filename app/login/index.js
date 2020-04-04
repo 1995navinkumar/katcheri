@@ -29,7 +29,6 @@ class Login extends React.Component {
         var actionComponent = (<button>Ok</button>);
         return (
             <div className="login-page">
-                <Snackbar message="Sync is disabled..!" actionComponent={actionComponent} />
                 <div className="login-content">
                     <img id="party-icon" src="assets/img/party-icon.png" />
                     <button id="login-button" onClick={this.login.bind(this)}>Dive In</button>

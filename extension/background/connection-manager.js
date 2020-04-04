@@ -11,7 +11,7 @@ var ConnectionManager = (function ConnectionManager() {
     var activeConnection;
     async function createConnection() {
         var userProfile = await getUserProfile();
-        var hostName = localStorage.getItem("server") || "192.168.43.57:8080";
+        var hostName = localStorage.getItem("server") || "localhost:8080";
         var ws = await makeConnection(hostName, userProfile);
         activeConnection = new Connection(ws);
         return activeConnection;

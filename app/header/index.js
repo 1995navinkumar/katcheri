@@ -28,7 +28,7 @@ class Header extends React.Component {
     render() {
         return (
             <div className="header">
-                <h2>Peer Party !!</h2>
+                <h2>Katcheri</h2>
                 <img id="settings-icon" src="assets/img/settings.png" onClick={this.redirectToSettings.bind(this)} />
                 <div className="notification-icon-container" onClick={this.redirectToNotification.bind(this)}>
                     <img id="notification-icon" className="icon" src="assets/img/notification-icon.png" />
