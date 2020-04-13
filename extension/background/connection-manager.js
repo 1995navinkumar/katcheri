@@ -1,22 +1,14 @@
+import { EventHandler, pipe, messageParser } from './utils';
 
-
-async function getUserProfile() {
-    return new Promise((resolve, reject) => {
-        chrome.identity.getProfileUserInfo(resolve);
-    })
-}
-
-
-var ConnectionManager = (function ConnectionManager() {
+export default (function ConnectionManager() {
     var activeConnection;
-    async function createConnection() {
-        var userProfile = await getUserProfile();
-        var hostName = localStorage.getItem("server") || "localhost:8080";
-        var ws = await makeConnection(hostName, userProfile);
-        activeConnection = new Connection(ws);
+    async function createConnection(url, queryParams, handler) {
+        var ws = await makeConnection(url, queryParams);
+        activeConnection = new Connection(ws, handler);
         return activeConnection;
     }
     function terminateConnection() {
+        if (!activeConnection) { return };
         activeConnection.trigger("close");
         activeConnection.close();
         activeConnection = undefined;
@@ -32,10 +24,9 @@ var ConnectionManager = (function ConnectionManager() {
     }
 })();
 
-
-async function makeConnection(hostName, profile) {
+async function makeConnection(url, queryParams) {
     return new Promise((resolve, reject) => {
-        var ws = new WebSocket(`ws://${hostName}?email=${profile.email}`);
+        var ws = new WebSocket(`ws://${url}?${queryParams}`);
         ws.onopen = function () {
             console.log("socket connection established ");
             resolve(ws);
@@ -50,11 +41,11 @@ async function makeConnection(hostName, profile) {
     });
 }
 
-function Connection(ws) {
+function Connection(ws, handler) {
     this.ws = ws;
-    this.IncomingMessageHandler = MessageHandler.call(this, IncomingMessageHandler);
-    Object.assign(this, composeEventHandler());
-    ws.onmessage = pipe(messageParser, this.IncomingMessageHandler);
+    this.handler = MessageHandler.call(this, handler);
+    Object.assign(this, new EventHandler());
+    ws.onmessage = pipe(messageParser, this.handler);
 }
 
 Connection.prototype.close = function close() {
@@ -90,6 +81,12 @@ function MessageHandler(categoryMapper) {
     return (message) => {
         console.log(message);
         var { category, type, data } = message;
-        return categoryMapper[category][type](this, data);
+        if (category && type) {
+            try {
+                return categoryMapper[category][type](this, data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
 }

@@ -13,15 +13,27 @@ class Party extends React.Component {
         })
     }
 
+    onMessage(message) {
+        if (message.type == "stream") {
+            var audioTag = document.getElementById("audio-player");
+            audioTag.srcObject = message.stream;
+        }
+    }
+
+    componentDidMount() {
+        chrome.runtime.onMessage.addListener(this.onMessage);
+        localStorage.setItem("page", "party");
+    }
+
     render() {
         return (
             <div className="party-page">
-            {/* <div id="party-name">{this.props.history.location.state.data.partyId}</div> */}
-            <audio id="audio-player" autoPlay controls></audio>
-            <div className="controls">
-                <button id="become-dj" onClick={this.onbecomeDjClick.bind(this)}>Become DJ</button>
+                {/* <div id="party-name">{this.props.history.location.state.data.partyId}</div> */}
+                <audio id="audio-player" autoPlay controls></audio>
+                <div className="controls">
+                    <button id="become-dj" onClick={this.onbecomeDjClick.bind(this)}>Become DJ</button>
+                </div>
             </div>
-        </div>
         );
     }
 }

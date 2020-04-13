@@ -2,6 +2,9 @@ import React from "react";
 import style from './notification.css';
 
 export default class Notification extends React.Component {
+    componentDidMount() {
+        localStorage.setItem("page", "notification");
+    }
     render() {
         return (
             <div className="notification-page">

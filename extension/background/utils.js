@@ -1,10 +1,14 @@
-function uuid() {
+export function uuid() {
     return Math.random().toString(36).substr(2, 9);
 }
 
-const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
+export const pipe = (...fns) => x => fns.reduce((y, f) => f(y), x);
 
-function composeEventHandler(eventHandler = {}) {
+export function messageParser(message) {
+    return JSON.parse(message.data);
+}
+
+export function EventHandler(eventHandler = {}) {
     var events = {};
 
 

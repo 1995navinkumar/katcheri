@@ -9,32 +9,32 @@ class Home extends React.Component {
 
     constructor(props) {
         super(props);
-        this.state = {partyName: ''};
+        this.state = { partyName: '' };
         this.onMessage = this.onMessage.bind(this);
     }
 
     onMessage(message) {
-        if(message.type === "party-creation-success") {
+        if (message.type === "party-creation-success") {
             this.props.history.push({
-              pathname: "party",
-              state: {
-                type: "create",
-                data: {
-                  partyId: message.data.partyId
+                pathname: "party",
+                state: {
+                    type: "create",
+                    data: {
+                        partyId: message.data.partyId
+                    }
                 }
-              }
             });
         }
 
-        if(message.type === "join-party-success") {
-            this.props.history.push("party",{type: "join"});
+        if (message.type === "join-party-success") {
+            this.props.history.push("party", { type: "join" });
         }
     }
 
     handleChange(event) {
-        this.setState({partyName: event.target.value});
+        this.setState({ partyName: event.target.value });
     }
-    
+
     createParty() {
         let partyName = this.state.partyName;
         chrome.runtime.sendMessage({
@@ -44,21 +44,22 @@ class Home extends React.Component {
     }
 
     joinParty() {
-        let partyName = this.state.partyName;
+        let partyName = document.getElementById("join-party").value;
         chrome.runtime.sendMessage({
             page: "home",
             type: "join-party",
-            data: {partyId: partyName}
+            data: { partyId: "navin" }
         });
     }
 
     componentDidMount() {
         chrome.runtime.onMessage.addListener(this.onMessage);
+        localStorage.setItem("page", "home");
     }
     componentWillUnmount() {
         chrome.runtime.onMessage.removeListener(this.onMessage);
     }
-    
+
     render() {
         return (
             <div className="home-page">

@@ -32,15 +32,16 @@ module.exports = class App extends React.Component {
 	componentDidMount() {
 		getBackgroundPage().then(page => {
 			var connection = page.ConnectionManager.getConnection();
+			var route = localStorage.getItem("page") || "login";
 			if (connection && connection.ws.readyState == 1) {
 				this.setState({
 					style: { visibility: "hidden" },
-					route: "/home"
+					route
 				})
 			} else {
 				this.setState({
 					style: { visibility: "hidden" },
-					route: '/party'
+					route
 				})
 			}
 		});
@@ -87,15 +88,6 @@ module.exports = class App extends React.Component {
 function getBackgroundPage() {
 	return new Promise((resolve, reject) => {
 		console.log(resolve);
-
 		chrome.runtime.getBackgroundPage(resolve);
 	});
-}
-
-function RedirectToRoute() {
-	return getBackgroundPage().then(function (page) {
-		console.log(page);
-
-		return (<Redirect to="/login" />);
-	})
 }

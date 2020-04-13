@@ -8,12 +8,7 @@
   },
   "background": {
     "scripts": [
-      "background/state.js",
-      "background/utils.js",
-      "background/rtc.js",
-      "background/popup-message-handler.js",
-      "background/server-message-handler.js",
-      "background/connection-manager.js"
+      "index.js"
     ],
     "persistent": true
   },

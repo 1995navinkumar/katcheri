@@ -3,7 +3,11 @@
  * @module RTC_Connnector
  * @extends EventTarget
  */
-class RTC_Connnector extends EventTarget {
+
+import { EventHandler } from './utils';
+
+var log = console.log;
+export default class RTC_Connnector extends EventTarget {
 
     /**
      * @param {Object} iceServers 
@@ -24,14 +28,14 @@ class RTC_Connnector extends EventTarget {
             iceServers
         });
 
-        var eventHandler = composeEventHandler();
+        var eventHandler = new EventHandler();
         this.on = eventHandler.on;
         this.off = eventHandler.off;
         this.trigger = eventHandler.trigger;
         this.events = eventHandler.events;
 
         console.log(this.rtcPeer);
-        
+
 
         this.rtcPeer.onnegotiationneeded = this._initiateConnection.bind(this);
         this.rtcPeer.ontrack = this._ontrack.bind(this);
@@ -46,7 +50,7 @@ class RTC_Connnector extends EventTarget {
 
     _ontrack(event) {
         log("track added in rtc");
-        this.trigger("streamReady",event);
+        this.trigger("streamReady", event);
     }
 
     async _initiateConnection() {
@@ -65,11 +69,7 @@ class RTC_Connnector extends EventTarget {
             log("Setting to local description");
             await this.rtcPeer.setLocalDescription(offer);
 
-            this.trigger("offerReady",this.rtcPeer.localDescription);
-            // signal({
-            //     action: "offer",
-            //     offer: peerList[username].localDescription
-            // });
+            this.trigger("offerReady", this.rtcPeer.localDescription);
 
         } catch (error) {
             log(`Failed in Negotiation ${error}`)
@@ -95,17 +95,12 @@ class RTC_Connnector extends EventTarget {
             return;
         } else {
             log("  - Setting remote description");
-            // await sendAudio();
             await this.rtcPeer.setRemoteDescription(desc);
 
             let answer = await this.rtcPeer.createAnswer(this.constraints);
             this.rtcPeer.setLocalDescription(answer);
 
-            this.trigger("answerReady",this.rtcPeer.localDescription);
-            // signal({
-            //     action: "answer",
-            //     answer: slavePeer.localDescription
-            // });
+            this.trigger("answerReady", this.rtcPeer.localDescription);
         }
     }
 
@@ -127,7 +122,7 @@ class RTC_Connnector extends EventTarget {
     _onicecandidate(event) {
         log("ice candidate handling");
         if (event.candidate) {
-            this.trigger("candidateReady",event.candidate);
+            this.trigger("candidateReady", event.candidate);
         }
     }
 }

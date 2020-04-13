@@ -21,12 +21,12 @@ class Login extends React.Component {
     }
     componentDidMount() {
         chrome.runtime.onMessage.addListener(this.onMessage);
+        localStorage.setItem("page","login");
     }
     componentWillUnmount() {
         chrome.runtime.onMessage.removeListener(this.onMessage);
     }
     render() {
-        var actionComponent = (<button>Ok</button>);
         return (
             <div className="login-page">
                 <div className="login-content">
