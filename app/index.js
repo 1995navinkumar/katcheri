@@ -41,7 +41,7 @@ module.exports = class App extends React.Component {
 			} else {
 				this.setState({
 					style: { visibility: "hidden" },
-					route
+					route: "login"
 				})
 			}
 		});
