@@ -18,34 +18,9 @@ const iceServers = [servers, turnServer];
 
 
 var webrtc = {
-    "dj-accept": function () {
-        audioStream = getAudioStream();
-    },
-    "join-party": async function (data) {
-        var clientIds = data.memberIds;
-        var streamObj = await audioStream;
-        var connection = ConnectionManager.getConnection();
-        clientIds.forEach((memberId) => {
-            var clientPeer = new RTC_Connnector(iceServers, streamObj);
-            partyMembers[memberId] = clientPeer;
-            clientPeer.on('offerReady', function (offer) {
-                connection.webrtc({
-                    type: "offer",
-                    data: { offer, memberId }
-                });
-            });
-            clientPeer.on('candidateReady', function (candidate) {
-                connection.webrtc({
-                    type: "candidate",
-                    data: { candidate, memberId }
-                });
-            })
-        });
-    },
-
-    "offer": function offer(message) {
+    "offer": function offer(connection, data) {
         peer = new RTC_Connnector(iceServers);
-        var memberId = message.data.memberId;
+        var memberId = data.memberId;
         var connection = ConnectionManager.getConnection();
         peer.on('answerReady', function (answer) {
             connection.webrtc({
@@ -63,19 +38,19 @@ var webrtc = {
             console.log("streamReady");
             getAudioTag().srcObject = stream;
         })
-        peer.acceptOffer(message.data.offer);
+        peer.acceptOffer(data.offer);
     },
 
-    "answer": function answer(message) {
-        var memberId = message.data.memberId;
+    "answer": function answer(connection, data) {
+        var memberId = data.memberId;
         var clientPeer = partyMembers[memberId];
-        clientPeer.setAnswer(message.data.answer);
+        clientPeer.setAnswer(data.answer);
     },
 
-    "candidate": function candidate(message) {
-        let memberId = message.data.memberId;
+    "candidate": function candidate(connection,data) {
+        let memberId = data.memberId;
         let clientPeer = partyMembers[memberId] || peer;
-        clientPeer.setRemoteCandidate(message.data.candidate);
+        clientPeer.setRemoteCandidate(data.candidate);
     }
 }
 
@@ -123,22 +98,6 @@ var notification = {
         });
     }
 }
-
-// var webrtc = {
-//     candidate: function candidate(connection, data) {
-//         var { candidate, memberId } = data;
-//         peer.setRemoteCandidate(candidate);
-//     },
-//     answer: function answer(connection, data) {
-//         var { answer, memberId } = data;
-//         peer.setAnswer(answer);
-
-//     },
-//     offer: function offer(connection, data) {
-//         var { offer, memberId } = data;
-//         peer.acceptOffer(offer);
-//     }
-// }
 
 export default {
     response,
