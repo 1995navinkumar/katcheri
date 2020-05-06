@@ -1,6 +1,7 @@
 import { getAudioStream, getAudioTag } from './peer';
 import RTC_Connnector from './rtc';
 import ConnectionManager from './connection-manager';
+import { audio } from './audio-handler';
 
 var audioStream, peer, partyMembers = {};
 
@@ -36,7 +37,8 @@ var webrtc = {
         });
         peer.on("streamReady", function ({ streams: [stream] }) {
             console.log("streamReady");
-            getAudioTag().srcObject = stream;
+            audio.srcObject = stream;
+            audio.play();
         })
         peer.acceptOffer(data.offer);
     },
@@ -69,8 +71,10 @@ var response = {
             data
         })
     },
-    "dj-accept": function () {
-        audioStream = getAudioStream();
+    "dj-accept": async function () {
+        audioStream = await getAudioStream();
+        audio.srcObject = audioStream;
+        audio.play();
     }
 }
 

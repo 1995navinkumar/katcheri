@@ -1,5 +1,6 @@
 
 import wsHandler from './ws-handler';
+import {audio as audHandle} from './audio-handler';
 
 async function getUserProfile() {
     return new Promise((resolve, reject) => {
@@ -40,6 +41,20 @@ var home = {
     }
 }
 
+var audio = {
+    play: function() {
+        audHandle && audHandle.play();
+    },
+
+    pause: function() {
+        audHandle && audHandle.pause();
+    },
+
+    isPlaying: function() {
+        return audHandle && !audHandle.paused;
+    }
+}
+
 var party = {
     "become-dj": function () {
         ConnectionManager.getConnection().request({
@@ -51,5 +66,6 @@ var party = {
 export default {
     login,
     home,
+    audio,
     party
 }

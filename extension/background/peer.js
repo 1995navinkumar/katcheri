@@ -36,11 +36,14 @@ export function getAudioStream() {
     if (!audioStream) {
         audioStream = new Promise(function (resolve, reject) {
             chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                chrome.tabCapture.capture({ audio: true }, (stream) => {
-                    var audioTag = getAudioTag();
-                    audioTag.srcObject = stream;
-                    audioStream = stream;
-                    console.log(audioStream);
+                chrome.tabCapture.capture({
+                            audio: true,
+                            audioConstraints: {
+                                mandatory: {
+                                    echoCancellation: false
+                                }
+                            }
+                        }, (stream) => {
                     resolve(stream);
                 });
             });
